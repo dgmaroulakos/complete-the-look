@@ -143,11 +143,32 @@
 		preload.src = src;
 	}
 
+	function getProductImage($item) {
+		var $primary = $item
+			.find('.jofme-card-media img:not(.jofme-hover-image)')
+			.first();
+
+		if ($primary.length) {
+			return $primary;
+		}
+
+		return $item
+			.find('img.ctm-complete-the-look__image, .ctm-complete-the-look__image')
+			.not('.jofme-hover-image')
+			.first();
+	}
+
 	function setProductImage($item, src) {
-		swapImageSmooth(
-			$item.find('img.ctm-complete-the-look__image, .ctm-complete-the-look__image').first(),
-			src
-		);
+		var $img = getProductImage($item);
+
+		swapImageSmooth($img, src);
+
+		// Variation preview should not fight Jofme gallery hover overlays.
+		if (src && $img.length) {
+			var defaultSrc = $img.data('default-src');
+			var swapped = defaultSrc && String(defaultSrc) !== String(src);
+			$item.toggleClass('ctm-image-swapped', !!swapped);
+		}
 	}
 
 	function syncSwatchUI($attribute) {
@@ -222,14 +243,14 @@
 		var attrs = getSelectedAttributes($item);
 		var filled = getFilledAttributes(attrs);
 		var $variationInput = $item.find('.ctm-complete-the-look__variation-id');
-		var $img = $item.find('img.ctm-complete-the-look__image, .ctm-complete-the-look__image').first();
+		var $img = getProductImage($item);
 		var $price = $item.find('.price, .ctm-complete-the-look__price').first();
 		var defaultSrc = $img.data('default-src');
 		var complete = attributesComplete(attrs);
 
 		if (!Object.keys(filled).length) {
 			$variationInput.val('');
-			$item.removeClass('ctm-variation-found ctm-variation-unavailable');
+			$item.removeClass('ctm-variation-found ctm-variation-unavailable ctm-image-swapped');
 			if (defaultSrc) {
 				setProductImage($item, defaultSrc);
 			}

@@ -293,6 +293,10 @@ class CTM_Frontend {
 			'ctm-align-' . $text_align,
 		);
 
+		if ( CTM_Helpers::is_jofme_theme() ) {
+			$section_classes[] = 'ctm-theme-jofme';
+		}
+
 		if ( $has_look_image ) {
 			$section_classes[] = 'ctm-has-look-image';
 			$section_classes[] = 'ctm-look-pos-' . $look_position;
@@ -359,6 +363,59 @@ class CTM_Frontend {
 	}
 
 	/**
+	 * Temporarily detach loop callbacks that conflict with Complete the Look cards.
+	 *
+	 * Jofme catalog extras (quick view, card swatches, list descriptions) clash with
+	 * CTL selection / variation UI. Media wrapper + category stay intact.
+	 *
+	 * @return array[] List of [ hook, callback, priority ] to restore.
+	 */
+	private function pause_theme_card_extras() {
+		$removed = array();
+
+		if ( ! CTM_Helpers::is_jofme_theme() ) {
+			return $removed;
+		}
+
+		$callbacks = array(
+			array( 'woocommerce_after_shop_loop_item', 'jofme_card_swatches', 7 ),
+			array( 'woocommerce_after_shop_loop_item', 'jofme_card_description', 7 ),
+			array( 'woocommerce_after_shop_loop_item', 'jofme_card_actions', 12 ),
+		);
+
+		foreach ( $callbacks as $callback ) {
+			list( $hook, $function, $priority ) = $callback;
+
+			if ( function_exists( $function ) && false !== has_action( $hook, $function ) ) {
+				remove_action( $hook, $function, $priority );
+				$removed[] = $callback;
+			}
+		}
+
+		return $removed;
+	}
+
+	/**
+	 * Restore previously paused theme card callbacks.
+	 *
+	 * @param array[] $removed List from pause_theme_card_extras().
+	 * @return void
+	 */
+	private function resume_theme_card_extras( $removed ) {
+		foreach ( (array) $removed as $callback ) {
+			if ( count( $callback ) < 3 ) {
+				continue;
+			}
+
+			list( $hook, $function, $priority ) = $callback;
+
+			if ( function_exists( $function ) ) {
+				add_action( $hook, $function, $priority );
+			}
+		}
+	}
+
+	/**
 	 * Render one product using WooCommerce loop card hooks (theme styles).
 	 *
 	 * @param WC_Product $item    Product object.
@@ -411,6 +468,7 @@ class CTM_Frontend {
 		// Use theme/WooCommerce loop card hooks, without the default loop ATC button.
 		$had_loop_atc   = false !== has_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart' );
 		$had_loop_price = false !== has_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price' );
+		$paused_extras  = $this->pause_theme_card_extras();
 
 		if ( $had_loop_atc ) {
 			remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
@@ -421,7 +479,7 @@ class CTM_Frontend {
 		}
 
 		add_action( 'woocommerce_before_shop_loop_item', array( $this, 'render_card_checkbox' ), 4 );
-		add_action( 'woocommerce_shop_loop_item_title', array( $this, 'render_card_badge' ), 5 );
+		add_action( 'woocommerce_shop_loop_item_title', array( $this, 'render_card_badge' ), 6 );
 		// After link close (priority 5), so interactive controls are not nested in <a>.
 		add_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_card_controls' ), 6 );
 		add_filter( 'wp_get_attachment_image_attributes', array( $this, 'filter_card_image_attributes' ), 20, 2 );
@@ -477,7 +535,7 @@ class CTM_Frontend {
 		<?php
 
 		remove_action( 'woocommerce_before_shop_loop_item', array( $this, 'render_card_checkbox' ), 4 );
-		remove_action( 'woocommerce_shop_loop_item_title', array( $this, 'render_card_badge' ), 5 );
+		remove_action( 'woocommerce_shop_loop_item_title', array( $this, 'render_card_badge' ), 6 );
 		remove_action( 'woocommerce_after_shop_loop_item', array( $this, 'render_card_controls' ), 6 );
 		remove_filter( 'wp_get_attachment_image_attributes', array( $this, 'filter_card_image_attributes' ), 20 );
 
@@ -488,6 +546,8 @@ class CTM_Frontend {
 		if ( empty( $context['show_price'] ) && $had_loop_price ) {
 			add_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
 		}
+
+		$this->resume_theme_card_extras( $paused_extras );
 
 		$this->card_context = array();
 
@@ -594,8 +654,14 @@ class CTM_Frontend {
 			return $attr;
 		}
 
-		$class = isset( $attr['class'] ) ? $attr['class'] . ' ' : '';
-		$attr['class'] = trim( $class . 'ctm-complete-the-look__image' );
+		$class = isset( $attr['class'] ) ? (string) $attr['class'] : '';
+
+		// Keep Jofme hover overlay images out of CTL variation swaps.
+		if ( false !== strpos( $class, 'jofme-hover-image' ) ) {
+			return $attr;
+		}
+
+		$attr['class'] = trim( $class . ' ctm-complete-the-look__image' );
 
 		if ( empty( $attr['data-default-src'] ) && ! empty( $attr['src'] ) ) {
 			$attr['data-default-src'] = $attr['src'];

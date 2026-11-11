@@ -1,0 +1,68 @@
+name: Validate and release plugin
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax
+        run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n1 php -l
+      - name: Updater wiring
+        run: php .tests/plugin-updates.php
+      - name: JavaScript syntax
+        run: |
+          node --check assets/js/frontend.js
+          node --check assets/js/admin-product.js
+      - name: Match release tag to plugin versions
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import os, re
+          from pathlib import Path
+          version = os.environ['RELEASE_TAG'].removeprefix('v')
+          assert re.fullmatch(r'\d+\.\d+\.\d+', version), 'Use vX.Y.Z'
+          main = Path('woo-complete-the-look.php').read_text()
+          assert re.search(r'^ \* Version:\s*' + re.escape(version) + r'\s*$', main, re.M), 'header Version mismatch'
+          assert f"const VERSION = '{version}';" in main, 'VERSION constant mismatch'
+          PY
+      - run: python3 scripts/package.py
+      - name: Verify ZIP root folder
+        run: |
+          python3 - <<'PY'
+          from zipfile import ZipFile
+          with ZipFile('dist/woo-complete-the-look.zip') as zf:
+              names = zf.namelist()
+          assert names, 'empty zip'
+          assert all(n.startswith('woo-complete-the-look/') for n in names), 'ZIP must unpack into woo-complete-the-look/'
+          assert 'woo-complete-the-look/woo-complete-the-look.php' in names
+          print(f'OK: {len(names)} files')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: woo-complete-the-look
+          path: dist/woo-complete-the-look.zip
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [validate]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: woo-complete-the-look
+          path: dist
+      - name: Publish installable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/woo-complete-the-look.zip --title "Woo Complete the Look $RELEASE_TAG" --generate-notes --verify-tag
