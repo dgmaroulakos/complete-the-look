@@ -534,3 +534,272 @@ form.cart .ctm-complete-the-look__jump {
 		transform: none;
 	}
 }
+
+/* -------------------------------------------------------------------------
+ * Jofme theme product-card compatibility
+ * Keeps CTL selection UI while inheriting Jofme card media / type / spacing.
+ * ---------------------------------------------------------------------- */
+.ctm-theme-jofme.ctm-complete-the-look {
+	border-top-color: var(--jofme-color-border, rgba(0, 0, 0, 0.08));
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__title {
+	font-family: var(--jofme-font-display, inherit);
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	text-align: start;
+}
+
+.ctm-theme-jofme.ctm-align-center .ctm-complete-the-look__title,
+.ctm-theme-jofme.ctm-align-center .ctm-complete-the-look__footer {
+	text-align: center;
+}
+
+/* Catalog extras that can still leak in must not compete with CTL controls. */
+.ctm-theme-jofme .jofme-card-actions,
+.ctm-theme-jofme .jofme-card-description,
+.ctm-theme-jofme .jofme-swatches,
+.ctm-theme-jofme ul.products li.product > .button,
+.ctm-theme-jofme ul.products li.product > .added_to_cart {
+	display: none !important;
+}
+
+/* Checkbox: opposite corner from sale badge (sale is top-start). */
+.ctm-theme-jofme .ctm-complete-the-look__check {
+	top: 12px;
+	left: auto;
+	inset-inline-start: auto;
+	inset-inline-end: 12px;
+	right: 12px;
+	z-index: 4;
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__check-mark {
+	border-radius: 50%;
+	border-color: var(--jofme-color-border, #e8e2d8);
+	background: var(--jofme-color-surface, #fffdf9);
+	box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__checkbox:checked + .ctm-complete-the-look__check-mark {
+	background: var(--jofme-color-text, #29231e);
+	border-color: var(--jofme-color-text, #29231e);
+}
+
+/* Match bestsellers card text rhythm inside CTL. */
+.ctm-theme-jofme ul.products li.product.ctm-complete-the-look__item {
+	text-align: start;
+}
+
+.ctm-theme-jofme ul.products li.product .woocommerce-loop-product__link {
+	color: var(--jofme-color-text, inherit);
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+}
+
+.ctm-theme-jofme ul.products li.product .jofme-card-media {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 1;
+	margin: 0;
+	overflow: hidden;
+	isolation: isolate;
+	background: var(--jofme-color-surface, #f0ebe4);
+}
+
+.ctm-theme-jofme ul.products li.product .jofme-card-media img {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	margin: 0;
+	padding: clamp(12px, 2vw, 28px);
+	object-fit: contain;
+	object-position: center;
+	aspect-ratio: auto;
+	background: transparent;
+}
+
+.ctm-theme-jofme ul.products li.product .woocommerce-loop-product__link > img.ctm-complete-the-look__image {
+	display: block;
+	width: 100%;
+	margin: 0;
+	aspect-ratio: 1;
+	object-fit: contain;
+	padding: clamp(12px, 2vw, 28px);
+	background: var(--jofme-color-surface, #f0ebe4);
+}
+
+.ctm-theme-jofme ul.products li.product .woocommerce-loop-product__title {
+	font-family: var(--jofme-font-body, inherit);
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.4;
+	letter-spacing: 0;
+	text-transform: none;
+	margin: 0 0 0.35rem;
+}
+
+.ctm-theme-jofme ul.products li.product .price {
+	font-size: 14px;
+	letter-spacing: 0;
+	margin: 0;
+	color: inherit;
+}
+
+.ctm-theme-jofme .jofme-card-category,
+.ctm-theme-jofme .ctm-complete-the-look__badge {
+	display: block;
+	margin: 0;
+	font-size: 10px;
+	line-height: 1.5;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--jofme-color-text-muted, #6b635c);
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__badge {
+	margin-bottom: 0.15rem;
+}
+
+/* Suppress hover overlay after a variation image swap. */
+.ctm-theme-jofme ul.products li.product.ctm-image-swapped .jofme-card-media .jofme-hover-image,
+.ctm-theme-jofme ul.products li.product.ctm-image-swapped:hover .jofme-card-media .jofme-hover-image {
+	opacity: 0 !important;
+}
+
+/* CTL variation controls under the card meta. */
+.ctm-theme-jofme .ctm-complete-the-look__variations {
+	align-items: flex-start;
+	margin-top: 0.5rem;
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__swatches {
+	justify-content: flex-start;
+	gap: 0.5rem;
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__swatch--has-color {
+	width: 22px;
+	height: 22px;
+	border: 3px solid var(--jofme-color-bg, var(--jofme-color-surface, #fff));
+	outline: 1px solid #bcb5ac;
+	box-shadow: none;
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__swatch.is-selected {
+	outline: 2px solid var(--jofme-color-accent, #b8956c);
+	outline-offset: 2px;
+	border-color: var(--jofme-color-bg, var(--jofme-color-surface, #fff));
+	box-shadow: none;
+	transform: none;
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__swatch:hover {
+	outline: 2px solid var(--jofme-color-accent, #b8956c);
+	outline-offset: 2px;
+	transform: none;
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__attr-select {
+	min-height: 44px;
+	border-radius: 3px;
+	border-color: var(--jofme-color-border, #e8e2da);
+	background: transparent;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+.ctm-theme-jofme .ctm-complete-the-look__add-selected,
+.ctm-theme-jofme .ctm-complete-the-look__button {
+	min-height: 54px;
+	width: 100%;
+	max-width: 22rem;
+	border-radius: 3px;
+	background: var(--jofme-color-text, #1a1512);
+	color: var(--jofme-color-surface, #fff);
+	border: 0;
+	font-size: 11px;
+	font-weight: 400;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.ctm-theme-jofme.ctm-align-center .ctm-complete-the-look__add-selected {
+	margin-inline: auto;
+}
+
+.ctm-theme-jofme form.cart .ctm-complete-the-look__jump,
+.ctm-theme-jofme .ctm-complete-the-look__jump.single_add_to_cart_button {
+	min-height: 54px;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 400;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+/* List layout: media stays in the product link (Jofme flex/grid card). */
+.ctm-theme-jofme.ctm-layout-list ul.products li.product.ctm-complete-the-look__item {
+	display: block;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--jofme-color-border, rgba(0, 0, 0, 0.06));
+}
+
+.ctm-theme-jofme.ctm-layout-list ul.products li.product .woocommerce-loop-product__link {
+	display: grid;
+	grid-template-columns: 110px minmax(0, 1fr);
+	column-gap: 1rem;
+	row-gap: 0.25rem;
+	align-items: start;
+}
+
+.ctm-theme-jofme.ctm-layout-list ul.products li.product .jofme-card-media,
+.ctm-theme-jofme.ctm-layout-list ul.products li.product .woocommerce-loop-product__link > img {
+	grid-column: 1;
+	grid-row: 1 / span 8;
+	width: 110px;
+	height: 110px;
+	aspect-ratio: auto;
+}
+
+.ctm-theme-jofme.ctm-layout-list ul.products li.product .jofme-card-media img {
+	padding: 12px;
+}
+
+.ctm-theme-jofme.ctm-layout-list .jofme-card-category,
+.ctm-theme-jofme.ctm-layout-list .ctm-complete-the-look__badge,
+.ctm-theme-jofme.ctm-layout-list ul.products li.product .woocommerce-loop-product__title,
+.ctm-theme-jofme.ctm-layout-list ul.products li.product .price {
+	grid-column: 2;
+}
+
+.ctm-theme-jofme.ctm-layout-list .ctm-complete-the-look__variations,
+.ctm-theme-jofme.ctm-layout-list .ctm-complete-the-look__actions {
+	margin-top: 0.65rem;
+}
+
+.ctm-theme-jofme.ctm-layout-compact ul.products li.product.ctm-complete-the-look__item {
+	border: 0;
+	background: transparent;
+	padding: 0;
+}
+
+@media (max-width: 767px) {
+	.ctm-theme-jofme ul.products li.product .jofme-card-media img,
+	.ctm-theme-jofme ul.products li.product .woocommerce-loop-product__link > img.ctm-complete-the-look__image {
+		padding: 12px;
+	}
+
+	.ctm-theme-jofme .ctm-complete-the-look__check {
+		top: 8px;
+		right: 8px;
+		inset-inline-end: 8px;
+	}
+}

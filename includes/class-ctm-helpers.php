@@ -13,6 +13,27 @@ defined( 'ABSPATH' ) || exit;
 class CTM_Helpers {
 
 	/**
+	 * Whether the active theme is Jofme (or a Jofme child).
+	 *
+	 * @return bool
+	 */
+	public static function is_jofme_theme() {
+		if ( defined( 'JOFME_VERSION' ) ) {
+			return true;
+		}
+
+		$theme = wp_get_theme();
+		$slug  = $theme->get_stylesheet();
+		$parent = $theme->get_template();
+
+		if ( in_array( 'jofme', array( $slug, $parent ), true ) ) {
+			return true;
+		}
+
+		return false !== stripos( (string) $theme->get( 'Name' ), 'Jofme' );
+	}
+
+	/**
 	 * Detect color-like attributes (color / colour / χρώμα).
 	 *
 	 * @param string $attribute_name Attribute taxonomy or name.

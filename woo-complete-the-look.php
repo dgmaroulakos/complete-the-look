@@ -3,7 +3,7 @@
  * Plugin Name:       Woo Complete the Look
  * Plugin URI:        https://example.com/woo-complete-the-look
  * Description:       Link complementary products to any WooCommerce product and display a "Complete the Look" section on the single product page.
- * Version:           1.6.2
+ * Version:           1.6.3
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Complete the Look
@@ -29,7 +29,7 @@ final class Woo_Complete_The_Look {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.6.2';
+	const VERSION = '1.6.3';
 
 	/**
 	 * Singleton instance.
