@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name:       Woo Complete the Look
- * Plugin URI:        https://example.com/woo-complete-the-look
+ * Plugin URI:        https://github.com/dgmaroulakos/complete-the-look
  * Description:       Link complementary products to any WooCommerce product and display a "Complete the Look" section on the single product page.
- * Version:           1.6.3
+ * Version:           1.6.4
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Complete the Look
@@ -11,6 +11,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       woo-complete-the-look
  * Domain Path:       /languages
+ * Update URI:        https://github.com/dgmaroulakos/complete-the-look
  * WC requires at least: 5.0
  * WC tested up to:   9.0
  *
@@ -29,7 +30,7 @@ final class Woo_Complete_The_Look {
 	 *
 	 * @var string
 	 */
-	const VERSION = '1.6.3';
+	const VERSION = '1.6.4';
 
 	/**
 	 * Singleton instance.
@@ -104,6 +105,7 @@ final class Woo_Complete_The_Look {
 	 */
 	private function includes() {
 		require_once CTM_PLUGIN_DIR . 'includes/class-ctm-helpers.php';
+		require_once CTM_PLUGIN_DIR . 'includes/class-ctm-updates.php';
 		require_once CTM_PLUGIN_DIR . 'includes/class-ctm-settings.php';
 		require_once CTM_PLUGIN_DIR . 'includes/class-ctm-admin.php';
 		require_once CTM_PLUGIN_DIR . 'includes/class-ctm-frontend.php';
@@ -115,6 +117,9 @@ final class Woo_Complete_The_Look {
 	 * @return void
 	 */
 	public function init() {
+		// GitHub updates work even when WooCommerce is inactive.
+		CTM_Updates::instance();
+
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 			return;
