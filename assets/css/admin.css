@@ -1,0 +1,146 @@
+/**
+ * Complete the Look — admin settings page
+ */
+
+.ctm-settings-wrap {
+	max-width: 860px;
+}
+
+.ctm-settings-wrap > .description {
+	margin-bottom: 1.25rem;
+}
+
+.ctm-settings-card {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	margin: 0 0 1.25rem;
+	padding: 0.25rem 1.25rem 0.5rem;
+}
+
+.ctm-settings-card h2 {
+	margin: 1rem 0 0.25rem;
+	padding: 0;
+	font-size: 1.1rem;
+}
+
+.ctm-settings-card .form-table th {
+	width: 220px;
+	padding-left: 0;
+}
+
+.ctm-settings-card .form-table td {
+	padding-right: 0;
+}
+
+.ctm-settings-card .description {
+	margin-top: 0.4rem;
+}
+
+/* Product Data — look image field */
+.ctm-look-image-field .ctm-look-image-wrap {
+	display: inline-block;
+	vertical-align: top;
+	max-width: 50%;
+}
+
+.ctm-look-image-preview {
+	display: block;
+	margin: 0 0 0.75rem;
+	max-width: 220px;
+}
+
+.ctm-look-image-preview img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border: 1px solid #c3c4c7;
+	border-radius: 2px;
+	background: #f0f0f1;
+}
+
+.ctm-look-image-field .button {
+	margin-right: 0.35rem;
+}
+
+/* Color presets */
+.ctm-color-presets {
+	padding-bottom: 1rem;
+}
+
+.ctm-color-presets__list {
+	margin: 0 12px 12px;
+}
+
+.ctm-color-preset {
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	background: #fff;
+	margin: 0 0 0.65rem;
+}
+
+.ctm-color-preset__summary {
+	cursor: pointer;
+	padding: 0.65rem 0.85rem;
+	font-weight: 600;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.ctm-color-preset__summary::-webkit-details-marker {
+	display: none;
+}
+
+.ctm-color-preset__summary code {
+	font-weight: 400;
+	opacity: 0.65;
+	font-size: 11px;
+}
+
+.ctm-color-preset__body {
+	padding: 0 0.85rem 0.85rem;
+	border-top: 1px solid #e2e4e7;
+}
+
+.ctm-color-preset__image {
+	margin-top: 0.75rem !important;
+}
+
+.ctm-color-preset__products {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	margin-top: 0.5rem;
+}
+
+.ctm-color-preset__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.45rem 0.55rem;
+	background: #f6f7f7;
+	border-radius: 3px;
+}
+
+.ctm-color-preset__product-name {
+	flex: 1;
+	min-width: 0;
+	font-size: 12px;
+	line-height: 1.35;
+}
+
+.ctm-color-preset__color-select {
+	min-width: 160px;
+	max-width: 220px;
+}
+
+.ctm-color-preset__no-color,
+.ctm-color-preset__empty {
+	font-size: 12px;
+	opacity: 0.7;
+	margin: 0;
+}
